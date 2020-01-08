@@ -32,7 +32,7 @@ export default function QuestionCard(props) {
         let question = { "name": document.getElementById("question").value, "options": [] }
         let allOptions = [];
         options.map((option, index) => {
-            allOptions.push({ "name": document.getElementById("option" + option.id).value });
+            allOptions.push({ "name": document.getElementById("option" + option.id).value,  "description": "", "idPartid": 1});
         })
         question.options = allOptions;
         props.saveQuestionHandler(props.id, question)
@@ -43,13 +43,13 @@ export default function QuestionCard(props) {
     }
     return (
         <Card style={{ width: "60rem" }}>
-            <CardHeader color="warning">
-                Question
+            <CardHeader color="info">
+                Intrebare Referendum.
             </CardHeader>
             <CardBody>
-                <h4 className={classes.cardTitle}>Type your question:</h4>
+                <h4 className={classes.cardTitle}>Introduceti intrebarea de referendum</h4>
                 <CustomInput
-                    labelText="Question..."
+                    labelText="Intrebare..."
                     id="question"
                     formControlProps={{
                         fullWidth: true
@@ -59,7 +59,7 @@ export default function QuestionCard(props) {
                     }}
                 />
                 <p>
-                    Add your options
+                    Adaugati optiuni pentru intrebarea de referendum
                 </p>
                 {options.map((option, index) => (
                     <CustomInput key={option.id}

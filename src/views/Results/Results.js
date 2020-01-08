@@ -8,8 +8,8 @@ import Table from "components/Table/Table.js";
 import Card from "components/Card/Card.js";
 import CardHeader from "components/Card/CardHeader.js";
 import CardBody from "components/Card/CardBody.js";
-import TablePoll from "components/TablePoll/TablePoll.js"
-import VoteCardPresentation from "components/VoteCard/VoteCardPresentation.js"
+import TablePoll from "components/TablePoll/TablePollResults"
+import ResultsCard from "components/ResultsCard/ResultsCard.js"
 const axios = require('axios');
 
 function createData(name, desc, startDate, endDate, pollId) {
@@ -95,28 +95,37 @@ export default function TableList() {
   )
   const [cardState, setCardState] = useState(false);
   const [poll, setPoll] = useState({});
+  const [pollResults, setPollResults] = useState({});
 
-  function handleRowReq(id) {
-    const url = "https://votedatc.herokuapp.com/api/v1.0/platform/election/" + id;
+  async function handleRowReq(id) {
+    const urlInformation = "https://votedatc.herokuapp.com/api/v1.0/platform/election/" + id;
+    const urlResults = "https://votedatc.herokuapp.com/api/v1.0/platform/statistics/" + id;
     const user = localStorage.getItem("user", user);
     const cnp = user.cnp;
-    axios.get(url, {
+    let pollInformation = await axios.get(urlInformation, {
       headers: {
         'Access-Control-Allow-Origin': '*',
         'x-user-cnp': cnp
       },
       withCredentials: true
     })
-      .then(function (response) {
-        console.log("POLL REQ", response.data);
 
-        setPoll(response.data[0])
-        setCardState(true);
+    let pollResults = await axios.get(urlResults, {
+        headers: {
+          'Access-Control-Allow-Origin': '*',
+          'x-user-cnp': cnp
+        },
+        withCredentials: true
       })
+    
+      let arrayResults =  Object.keys(pollResults.data).map(function(key) {
+        return pollResults.data[key]
+    });
+      console.log("Poll Informations & Results::",pollInformation.data[0], "AND", arrayResults);
 
-      .catch(function (error) {
-        console.warn(error.message)
-      })
+      setPoll(pollInformation.data[0])
+      setPollResults(arrayResults)
+      setCardState(true);
   }
 
   if (loading === true) {
@@ -137,7 +146,7 @@ export default function TableList() {
               <TablePoll rows={rows} handleRowReq={handleRowReq}></TablePoll>
             </CardBody>
           </Card> :
-            <VoteCardPresentation poll = {poll}></VoteCardPresentation>
+            <ResultsCard poll = {poll} pollResults = {pollResults}></ResultsCard>
         }
 
       </GridItem>

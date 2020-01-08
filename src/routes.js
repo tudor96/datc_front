@@ -39,6 +39,10 @@ import RegisterPage from "views/RegisterPage";
 import LoginPage from "views/LoginPage";
 import InsertPoll from "views/InsertPoll/InsertPoll";
 import PollList from "views/PollList/PollList";
+import EditAdmin from "views/EditAdmin/EditAdmin";
+import Results from "views/Results/Results"
+
+import Vote from "views/Vote/Vote";
 
 
 const dashboardRoutes = [
@@ -58,72 +62,42 @@ const dashboardRoutes = [
   },
   {
     path: "/ipoll",
-    name: "Insert New Poll",
+    name: "Inserare Eveniment de Vot",
     icon: LibraryBooks,
     component: InsertPoll,
+    isAdmin: 1,
     layout: "/admin"
   },
   {
     path: "/tpoll",
-    name: "Polls List",
+    name: "Lista Evenimente",
     icon: Dashboard,
+    isAdmin: 0,
     component: PollList,
     layout: "/admin"
   },
   {
-    path: "/dashboard",
-    name: "Dashboard",
-    rtlName: "لوحة القيادة",
-    icon: Dashboard,
-    component: DashboardPage,
-    layout: "/admin"
-  },
-  {
-    path: "/user",
-    name: "User Profile",
-    rtlName: "ملف تعريفي للمستخدم",
-    icon: Person,
-    component: UserProfile,
-    layout: "/admin"
-  },
-  {
-    path: "/table",
-    name: "Table List",
-    rtlName: "قائمة الجدول",
-    icon: "content_paste",
-    component: TableList,
-    layout: "/admin"
-  },
-  {
-    path: "/typography",
-    name: "Typography",
-    rtlName: "طباعة",
-    icon: LibraryBooks,
-    component: Typography,
-    layout: "/admin"
-  },
-  {
-    path: "/icons",
-    name: "Icons",
-    rtlName: "الرموز",
+    path: "/vote",
+    name: "Votare",
     icon: BubbleChart,
-    component: Icons,
+    isAdmin: 0,
+    component: Vote,
     layout: "/admin"
   },
   {
-    path: "/maps",
-    name: "Maps",
-    rtlName: "خرائط",
-    icon: LocationOn,
-    component: Maps,
+    path: "/editadm",
+    name: "Adaugare Partid si Admini",
+    icon: Person,
+    isAdmin: 1,
+    component: EditAdmin,
     layout: "/admin"
   },
   {
-    path: "/notifications",
-    name: "Notifications",
-    rtlName: "إخطارات",
-    icon: Notifications,
-    component: NotificationsPage,
+    path: "/results",
+    name: "Rezultate",
+    isAdmin: 0,
+    icon: Dashboard,
+    component: Results,
     layout: "/admin"
   },
 ];

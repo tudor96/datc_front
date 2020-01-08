@@ -133,7 +133,7 @@ export default function TablePoll(props) {
                   return (
                     <TableCell key={column.id} align={column.align}>
                       {column.id === "more" ?
-                        <Button color="primary" onClick={() => handleClickButton(row.pollId)}  >Register for Vote</Button> :
+                        <Button color="primary" onClick={() => handleClickButton(row.pollId)}  >Vezi rezultate alegere</Button> :
                         column.id === "startDate" || column.id === "endDate" ? moment(value).format('MM DD YYYY, h:mm a') :
                         column.format && typeof value === 'number' ? column.format(value) : value}
                     </TableCell>

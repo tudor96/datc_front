@@ -18,21 +18,26 @@ var UserProfile = (function() {
   }
 
   var setAuth = function(user){
-    localStorage.setItem("user", user); 
-    console.log("settting user", user.isAdmin);
-    if (user.isAdmin){
-      window.location.href = `/admin/dashboard`;
-    }else {
-      window.location.href = `/admin/dashboard`;
+
+    if (user !== null) {
+      
+      localStorage.setItem("user", user); 
+      localStorage.setItem("cnp", user.cnp);
+      localStorage.setItem("isAdmin", user.isAdmin);
+
+      console.log("settting user", user.isAdmin);
+      if (user.isAdmin){
+        window.location.href = `/admin/tpoll`;
+      }else {
+        window.location.href = `/admin/tpoll`;
+      }
+    } else {
+      localStorage.clear();
+      window.location.href = `/auth/login`;
     }
+
     
-    // localStorage.setItem("user", JSON.stringify(authenticated));
-    // if(authenticated.isAdmin){
-    //   window.location.href = `/admin/dashboard`;
-    // }
-    // else{
-    //   window.location.href = `/admin/dashboard`;
-    // }
+
   }
 
   return {

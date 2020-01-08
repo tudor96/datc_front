@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useState} from "react";
 import { Link } from "react-router-dom"
 // @material-ui/core components
 import { makeStyles } from "@material-ui/core/styles";
@@ -23,63 +23,93 @@ import CardBody from "components/Card/CardBody.js";
 import CardHeader from "components/Card/CardHeader.js";
 import CardFooter from "components/Card/CardFooter.js";
 import CustomInput from "components/CustomInput/CustomInput.js";
-
+import MenuItem from '@material-ui/core/MenuItem';
 import styles from "assets/jss/material-kit-react/views/loginPage.js";
 import history from '../history';
 import image from "assets/img/bg.jpg";
 import UserProfile from "UserProfile.js"
-axios.defaults.withCredentials = true;
+import FormControl from '@material-ui/core/FormControl';
+import Select from '@material-ui/core/Select';
+
 
 const useStyles = makeStyles(styles);
 
 export default function RegisterPage(props) {
   const [cardAnimaton, setCardAnimation] = React.useState("cardHidden");
+  const [judete, setJudete] = useState('');
+  const [judet, setJudet] = useState('');
+  const [sex, setSex] = useState('');
+
+
+  React.useEffect(() => {
+    const url = "https://votedatc.herokuapp.com/api/v1.0/platform/election/regions"
+    const cnp = localStorage.getItem("cnp");
+
+
+    axios.get(url, {
+      headers: {
+        'Access-Control-Allow-Origin': '*',
+        'x-user-cnp': cnp
+      },
+      withCredentials: true
+    })
+      .then(function (response) {
+        console.log("PARTIDE", response);
+        setJudete(response.data);
+      })
+      .catch(function (error) {
+      })
+  }, []);
+
   setTimeout(function () {
     setCardAnimation("");
   }, 700);
   const classes = useStyles();
-  // const history = useHistory();
-
-  // function handleClick() {
-  //   history.push("/auth/register");
-  // }
-  // const { ...rest } = props;
 
   function authenticationHandler() {
 
-    const url = `http://localhost:4010/api/v1.0/platform/user`;
+    const url = `https://votedatc.herokuapp.com/api/v1.0/platform/user`;
 
     axios.post(url, {
-      "firstname": document.getElementById("name").value,
-      "lastname": document.getElementById("surname").value,
+      "firstname": document.getElementById("firstname").value,
+      "lastname": document.getElementById("firstname").value+ "."+document.getElementById("lastname").value,
+      "username": document.getElementById("lastname").value,
       "email": document.getElementById("email").value,
       "cnp": document.getElementById("cnp").value,
-      "adresa": document.getElementById("oras").value + document.getElementById("judet").value,
-    }, {
-      headers: {
-          'Access-Control-Allow-Origin': '*',
-      },
-      withCredentials : true
-    })
-    .then(function (response) {
-      UserProfile.setAuth(response);
-      if(response.isAdmin === 0){
-        history.push("/admin");        
-      } else {
-        history.push("/admin");        
-      }
-      alert("Registration made!");
-    })
-    .catch(function (error) {
-      console.log(error);
-      alert("Registration failed!");
-    });
+      "adresa": document.getElementById("adresa").value ,
+      "judet": judete[judet].id ,
+      "sex":  sex,
 
 
+    })
+      .then(function (response) {
+        console.log(response.data[0]);
+        UserProfile.setAuth(response.data[0]);
+        alert("Registration made!");
+      })
+      .catch(function (error) {
+        console.log(error);
+        alert("Registration failed!");
+      });
   }
 
+  function handleChangeJudet(event){
+    setJudet(event.target.value);
+  }
+
+  function handleChangeSex(event){
+    setSex(event.target.value);
+  }
+
+  if (judete.length === 0)
+    return (
+      <div>
+        Loading...
+      </div>
+    )
 
   return (
+
     <div>
       <Header
         absolute
@@ -95,19 +125,19 @@ export default function RegisterPage(props) {
         }}
       >
         <div className={classes.container}>
-          <GridContainer justify="center">
+          <GridContainer justify="center" >
             <GridItem xs={12} sm={12} md={8}>
-              <Card>
+              <Card className={classes[cardAnimaton]}>
                 <CardHeader color="primary">
                   <h4 className={classes.cardTitleWhite}>Register</h4>
                   <p className={classes.cardCategoryWhite}>Inregistreaza-te pentru a accesa platforma de votare online.</p>
                 </CardHeader>
                 <CardBody>
                   <GridContainer>
-                    <GridItem xs={12} sm={12} md={5}>
+                    <GridItem xs={12} sm={12} md={6}>
                       <CustomInput
                         labelText="Nume"
-                        id="name"
+                        id="firstname"
                         formControlProps={{
                           fullWidth: true
                         }}
@@ -116,16 +146,16 @@ export default function RegisterPage(props) {
                         }}
                       />
                     </GridItem>
-                    <GridItem xs={12} sm={12} md={3}>
+                    <GridItem xs={12} sm={12} md={6}>
                       <CustomInput
                         labelText="Prenume"
-                        id="surname"
+                        id="lastname"
                         formControlProps={{
                           fullWidth: true
                         }}
                       />
                     </GridItem>
-                    <GridItem xs={12} sm={12} md={4}>
+                    <GridItem xs={12} sm={12} md={6}>
                       <CustomInput
                         labelText="Adresa de email"
                         id="email"
@@ -145,61 +175,49 @@ export default function RegisterPage(props) {
                         }}
                       />
                     </GridItem>
-                    {/* <GridItem xs={12} sm={12} md={6}>
-                      <CustomInput
-                        labelText="Last Name"
-                        id="last-name"
-                        formControlProps={{
-                          fullWidth: true
-                        }}
-                      />
-                    </GridItem> */}
+
                   </GridContainer>
                   <GridContainer>
-                    <GridItem xs={12} sm={12} md={4}>
+                    <GridItem xs={12} sm={12} md={6}>
                       <CustomInput
-                        labelText="Oras"
-                        id="oras"
+                        labelText="Adresa"
+                        id="adresa"
                         formControlProps={{
                           fullWidth: true
                         }}
                       />
                     </GridItem>
-                    <GridItem xs={12} sm={12} md={4}>
-                      <CustomInput
-                        labelText="Judet"
-                        id="judet"
-                        formControlProps={{
-                          fullWidth: true
-                        }}
-                      />
+                    <GridItem xs={12} sm={12} md={3}>
+                      <FormControl className={classes.formControl}>
+                        <InputLabel id={"selectLabel"}>Judet</InputLabel>
+                        <Select
+                          id={"select"}
+                          value={judet}
+                          onChange={event => handleChangeJudet(event)}
+                        >
+                          {judete.map((p, index) => (
+                            <MenuItem value={index}>{p.name}</MenuItem>
+                          ))}
+                        </Select>
+                      </FormControl>
                     </GridItem>
-                    {/* <GridItem xs={12} sm={12} md={4}>
-                      <CustomInput
-                        labelText="Postal Code"
-                        id="postal-code"
-                        formControlProps={{
-                          fullWidth: true
-                        }}
-                      />
-                    </GridItem> */}
+                    <GridItem xs={12} sm={12} md={3}>
+                      <FormControl className={classes.formControl}>
+                        <InputLabel id={"sexLabel"}>Sex</InputLabel>
+                        <Select
+                          id={"selectsex"}
+                          value={sex}
+                          onChange={event => handleChangeSex(event)}
+                        >
+                          
+                            <MenuItem value={"masculin"}>Masculin</MenuItem>
+                            <MenuItem value={"feminin"}>Feminin</MenuItem>
+                            <MenuItem value={"altele"}>Altele</MenuItem>
+                          
+                        </Select>
+                      </FormControl>
+                    </GridItem>
                   </GridContainer>
-                  {/* <GridContainer>
-                    <GridItem xs={12} sm={12} md={12}>
-                      <InputLabel style={{ color: "#AAAAAA" }}>About me</InputLabel>
-                      <CustomInput
-                        labelText="Lamborghini Mercy, Your chick she so thirsty, I'm in that two seat Lambo."
-                        id="about-me"
-                        formControlProps={{
-                          fullWidth: true
-                        }}
-                        inputProps={{
-                          multiline: true,
-                          rows: 5
-                        }}
-                      />
-                    </GridItem>
-                  </GridContainer> */}
                 </CardBody>
                 <CardFooter>
                   <GridContainer>

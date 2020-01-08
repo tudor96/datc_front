@@ -12,8 +12,9 @@ import CardHeader from "components/Card/CardHeader.js";
 import CardAvatar from "components/Card/CardAvatar.js";
 import CardBody from "components/Card/CardBody.js";
 import CardFooter from "components/Card/CardFooter.js";
-
+import moment from 'moment'
 import avatar from "assets/img/faces/marc.jpg";
+import axios from "axios";
 
 const styles = {
   cardCategoryWhite: {
@@ -37,8 +38,37 @@ const styles = {
 const useStyles = makeStyles(styles);
 
 export default function VoteCardPresentation(props) {
-  console.log("PROPS",props);
+  
   const classes = useStyles();
+
+  function registerVoteHandler() {
+    console.log("PROPS", props);
+    if (props.poll.id !== undefined && props.poll.id !== null && props.poll.id !== '') {
+      const url = "https://votedatc.herokuapp.com/api/v1.0/platform/user/signUp"
+      const cnp = localStorage.getItem("cnp");
+
+
+      axios.post(url, {
+        "pollId": props.poll.id,
+
+    }, {
+        headers: {
+            'x-user-cnp': cnp,
+        },
+        withCredentials: true
+    })
+        .then(function (response) {
+
+            alert("Mailul cu codul de inregistrare s-a trimis!");
+        })
+        .catch(function (error) {
+            console.log(error);
+            alert("EROARE LA INREGISTRARE INCERCATI DIN NOU");
+        });
+    } else {
+      alert("EROARE LA INREGISTRARE INCERCATI DIN NOU");
+    }
+  }
   return (
     <div>
       <GridContainer>
@@ -67,7 +97,7 @@ export default function VoteCardPresentation(props) {
               </GridContainer>
             </CardBody>
             <CardFooter>
-              <Button color="primary">Register for this poll</Button>
+              <Button color="primary" onClick={registerVoteHandler}>Register for this poll</Button>
             </CardFooter>
           </Card>
         </GridItem>
@@ -75,7 +105,9 @@ export default function VoteCardPresentation(props) {
           <Card profile>
             <CardBody profile>
               <h3 className={classes.cardCategory}>{props.poll.name}</h3>
-              <h6 className={classes.cardTitle}>{props.poll.startDate}-{props.poll.endDate}</h6>
+              <h6 className={classes.cardTitle}>Data de inceput: {moment(props.poll.startDate).format('MMMM Do YYYY, h:mm:ss a')}</h6>
+              <h6 className={classes.cardTitle}>Data de sfarsit: {moment(props.poll.endDate).format('MMMM Do YYYY, h:mm:ss a')}</h6>
+
               <p className={classes.description}>{props.poll.description} </p>
             </CardBody>
           </Card>
@@ -85,143 +117,3 @@ export default function VoteCardPresentation(props) {
   );
 }
 
-{/* <GridItem xs={12} sm={6} md={4} lg={3}>
-<div className={classes.title}>
-  <h3>Radio Buttons</h3>
-</div>
-<div
-  className={
-    classes.checkboxAndRadio +
-    " " +
-    classes.checkboxAndRadioHorizontal
-  }
->
-  <FormControlLabel
-    control={
-      <Radio
-        checked={selectedEnabled === "a"}
-        onChange={() => setSelectedEnabled("a")}
-        value="a"
-        name="radio button enabled"
-        aria-label="A"
-        icon={
-          <FiberManualRecord className={classes.radioUnchecked} />
-        }
-        checkedIcon={
-          <FiberManualRecord className={classes.radioChecked} />
-        }
-        classes={{
-          checked: classes.radio,
-          root: classes.radioRoot
-        }}
-      />
-    }
-    classes={{
-      label: classes.label,
-      root: classes.labelRoot
-    }}
-    label="First Radio"
-  />
-</div>
-<div
-  className={
-    classes.checkboxAndRadio +
-    " " +
-    classes.checkboxAndRadioHorizontal
-  }
->
-  <FormControlLabel
-    control={
-      <Radio
-        checked={selectedEnabled === "b"}
-        onChange={() => setSelectedEnabled("b")}
-        value="b"
-        name="radio button enabled"
-        aria-label="B"
-        icon={
-          <FiberManualRecord className={classes.radioUnchecked} />
-        }
-        checkedIcon={
-          <FiberManualRecord className={classes.radioChecked} />
-        }
-        classes={{
-          checked: classes.radio,
-          root: classes.radioRoot
-        }}
-      />
-    }
-    classes={{
-      label: classes.label,
-      root: classes.labelRoot
-    }}
-    label="Second Radio"
-  />
-</div>
-<div
-  className={
-    classes.checkboxAndRadio +
-    " " +
-    classes.checkboxAndRadioHorizontal
-  }
->
-  <FormControlLabel
-    disabled
-    control={
-      <Radio
-        checked={false}
-        value="a"
-        name="radio button disabled"
-        aria-label="B"
-        icon={
-          <FiberManualRecord className={classes.radioUnchecked} />
-        }
-        checkedIcon={
-          <FiberManualRecord className={classes.radioChecked} />
-        }
-        classes={{
-          checked: classes.radio,
-          disabled: classes.disabledCheckboxAndRadio,
-          root: classes.radioRoot
-        }}
-      />
-    }
-    classes={{
-      label: classes.label,
-      root: classes.labelRoot
-    }}
-    label="Disabled Unchecked Radio"
-  />
-</div>
-<div
-  className={
-    classes.checkboxAndRadio +
-    " " +
-    classes.checkboxAndRadioHorizontal
-  }
->
-  <FormControlLabel
-    disabled
-    control={
-      <Radio
-        checked={true}
-        value="b"
-        name="radio button disabled"
-        aria-label="B"
-        icon={
-          <FiberManualRecord className={classes.radioUnchecked} />
-        }
-        checkedIcon={
-          <FiberManualRecord className={classes.radioChecked} />
-        }
-        classes={{
-          checked: classes.radio,
-          disabled: classes.disabledCheckboxAndRadio,
-          root: classes.radioRoot
-        }}
-      />
-    }
-    classes={{ label: classes.label, root: classes.labelRoot }}
-    label="Disabled Checked Radio"
-  />
-</div>
-</GridItem> */}

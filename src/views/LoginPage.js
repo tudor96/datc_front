@@ -39,17 +39,14 @@ export default function LoginPage(props) {
   // const { ...rest } = props;
   function handleSign() {
     const cnp = document.getElementById("cnp").value;
-    const url = "http://localhost:4010/api/v1.0/platform/user";
-
+    const url = "https://votedatc.herokuapp.com/api/v1.0/platform/user";
     axios.get(url, {
       params: {
         cnp: cnp
       },
       headers: {
-          'Access-Control-Allow-Origin': '*',
           'x-user-cnp': cnp
-      },
-      withCredentials : true
+      }
     })
     .then(function (response) {
       console.log(response.data[0]);

@@ -21,8 +21,16 @@ import logo from "assets/img/admin-settings-male.png";
 
 let ps;
 
+const admin = parseInt(localStorage.getItem("isAdmin"))
+console.log("admin", localStorage.getItem("isAdmin"));
 const filteredRoutes = routes.filter(function(route) {
-	return route.layout === "/admin";
+  console.log(route.isAdmin === admin);
+  if (admin === 1) {
+    return route.layout === "/admin" 
+  } else {
+    return route.layout === "/admin" && (route.isAdmin === admin);
+  }
+  
 });
 
 const switchRoutes = (
